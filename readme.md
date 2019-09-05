@@ -32,6 +32,7 @@ mitm.onRequest((req, res, next) => {
     } catch (err) {
         return next(err);
     }
+    next();
 });
 
 // Second middleware
@@ -43,6 +44,7 @@ mitm.onRequest((req, res, next) => {
     } catch (err) {
         return next(err);
     }
+    next();
 });
 
 mitm.onResponse((req, res, proxyRes, next) => {

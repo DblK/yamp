@@ -27,7 +27,7 @@ class ErrorWithCode extends Error {
  * @param {Promise} promise Promise to race against timeout
  */
 const promiseTimeout = (ms, promise) => {
-  const timeout = new Promise((resolve, reject) => {
+  const timeout = new Promise((_resolve, reject) => {
     debug(`Timeout in ${ms}ms`);
     const id = setTimeout(() => {
       clearTimeout(id);
@@ -54,7 +54,7 @@ class Proxy extends EventEmitter {
     this.app = connect();
 
     // Retrieve whole body request
-    const rawBodyParser = (req, res, buf, encoding) => {
+    const rawBodyParser = (req, _res, buf) => {
       if (buf && buf.length) {
         req.rawBody = buf;
       } else {
@@ -65,7 +65,7 @@ class Proxy extends EventEmitter {
     this.app.use(bodyParser.urlencoded({ extended: false, verify: rawBodyParser }));
 
     // No encoding (raw only)
-    this.onRequest((req, res, next) => {
+    this.onRequest((req, _res, next) => {
       delete req.headers['accept-encoding'];
       next();
     });
@@ -144,7 +144,7 @@ class Proxy extends EventEmitter {
         }
       })), Promise.resolve());
 
-      promiseTimeout(this.options.timeout, handlers)
+      return promiseTimeout(this.options.timeout, handlers)
         .catch((err) => {
           if (err.code !== 'ERR_TIMEOUT_PROMISE') {
             debug(err);
@@ -190,7 +190,7 @@ class Proxy extends EventEmitter {
     * @param {http.ServerResponse} proxyRes Response
     * @param {Promise} next Pass to the next registered function
    */
-  _finalResponse(req, res, proxyRes, next) {
+  _finalResponse(_req, res, proxyRes, next) {
     debug('_finalResponse');
 
     if (res.finished) {
@@ -466,12 +466,14 @@ class Proxy extends EventEmitter {
       if (sslServer) {
         return that.makeConnection(sslServer.port, req, socket, head);
       }
+      // eslint-disable-next-line no-useless-escape
       const wildcardHost = hostname.replace(/[^\.]+\./, '*.');
       let sem = that.sslSemaphores[wildcardHost];
       if (!sem) {
         that.sslSemaphores[wildcardHost] = semaphore(1);
         sem = that.sslSemaphores[wildcardHost];
       }
+      // eslint-disable-next-line consistent-return
       sem.take(() => {
         if (that.sslServers[hostname]) {
           process.nextTick(sem.leave.bind(sem));
@@ -509,6 +511,7 @@ class Proxy extends EventEmitter {
   getHttpsServer(hostname, callback) {
     const that = this;
 
+    // eslint-disable-next-line consistent-return
     that.onCertificateRequired(hostname, (err, files) => {
       if (err) {
         return callback(err);
@@ -558,6 +561,7 @@ class Proxy extends EventEmitter {
             });
           });
         }],
+      // eslint-disable-next-line consistent-return
       }, (errFinal, results) => {
         if (errFinal) {
           return callback(errFinal);
