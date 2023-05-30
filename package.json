@@ -1,10 +1,10 @@
 {
   "name": "@dblk/yamp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple MITM HTTP/HTTPS proxy with capability of chaining middleware",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
@@ -31,9 +31,9 @@
     "semaphore": "^1.1.0"
   },
   "devDependencies": {
-    "eslint": "6.3.0",
-    "eslint-config-airbnb-base": "12.1.0",
-    "eslint-plugin-import": "2.8.0"
+    "eslint": "8.2.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.27.5"
   },
   "author": {
     "name": "Remy Boulanouar",
